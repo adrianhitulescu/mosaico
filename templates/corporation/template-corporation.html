@@ -1,0 +1,784 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="initial-scale=1.0" />
+  <meta name="format-detection" content="telephone=no" />
+  <title style="-ko-bind-text: @titleText">TITLE</title>
+  <style type="text/css">
+    @supports -ko-blockdefs {
+      id { widget: id }
+      size { label: Size; widget: select; options: 8|9|10|11|12|13|14|15|16|18|20|22|25|28|31; }
+      visible { label: Visible?; widget: boolean }
+      color { label: Color; widget: color }
+      radius {
+        label: Corner Radius;
+        widget: integer;
+        max: 20;
+        help: Attention - this property is not supported on all email clients (i.e. Outlook)
+      }
+      face { label: Font; widget: select; options: Arial, Helvetica, sans-serif=Arial|Arial Black, Arial Black, Gadget, sans-serif=Arial Black|Comic Sans MS, Comic Sans MS5, cursive=Comic Sans|Courier New, Courier New, monospace=Courier|Georgia, serif=Georgia|Impact, sans-serif=Impact|Lucida Console, Monaco, monospace=Lucida Console|Lucida Sans Unicode, Lucida Grande, sans-serif=Lucida Sans Unicode|Times New Roman, Times, serif=Times New Roman|Verdana, Geneva, sans-serif=Verdana}
+      decoration { label: Decoration; widget: select; options: none=None|underline=Underline }
+      linksColor { label: Link Color; extend: color }
+      linksDecoration { label: Underlined Links?; extend: decoration }
+      buttonColor { label: Button Color; extend: color }
+      text { label: Paragraph; widget: text }
+      url { label: Link; widget: url }
+      src { label: Image; widget: src }
+      hrWidth { label: Width; widget: select; options:10|20|30|40|50|60|70|80|90|100; }
+      hrHeight { label: Line height; widget: integer; max: 80; }
+
+      height { label: Height; widget: integer }
+      imageHeight { label: Image Height; extend: height; }
+      spacerSize { label: Height; widget: integer; max: 90; min: 4; }
+      align { label: Alignment; widget: select; options:left=Left|right=Right|center=Center}
+      alt {
+        label: Alternative Text;
+        widget: text;
+        help: Alternative text will be shown on email clients that does not download image automatically;
+      }
+      sponsor { label: Sponsor; properties: visible=true src url alt; category: hidden }
+      titleText {label:Title Text;category: hidden;}
+      gutterVisible { label: Show Gutter; extend: visible }
+      socialIconType { label: Icon Version;widget: select; options:bw=Black and White|colors=Colors; }
+
+      preheaderLinkOption {
+        label: Unsubscribe Link;
+        widget: select;
+        options: [profile_link]=Profile|[unsubscribe_link]=Unsubscribe|none=None;
+        help: If -None- is selected, preHeader text will be shown;
+      }
+     
+      hrStyle { label: Separator Style;properties:color hrWidth hrHeight; }
+      hrStyle:preview { height: 200%; width: 200%; bottom: 20px; -ko-border-bottom: @[hrHeight]px solid @color; }
+      preheaderVisible { label: Show Preheader; extend: visible; help: Preheader block is the first one on the top of the page. It contains web version link and optionally unsubscribe link or a preheader text that will be shown as a preview on some email clients; }
+
+      /* content types */
+      blocks { label: Blocks; properties: blocks[]; }
+      link { label: Link; properties: text url }
+      image { label: Image; properties: src url alt }
+      logo { label: Logo; properties: src url alt }
+      backgroundColor { label: Background Color; extend: color }
+      headingColor { label: Heading Color; extend: color; options: 1f497d|4f81bd|c0504d|9bbb59|8064a2|4bacc6|f79646|000000|ffffff; }
+      textColor { label: Text Color; extend: color; options: 4f81bd|c0504d|9bbb59|8064a2|4bacc6|f79646|000000|ffffff; }
+      buttonLink { label: Button; extend: link }
+      
+      /* texts and links */
+      leftLink { label: Left link; properties: text url }
+      middleLink { label: Middle link; properties: text url }
+      rightLink { label: Right link; properties: text url }
+      twitterLink { label: Twitter URL; properties: url alt }
+      facebookLink { label: Facebook URL; properties: url }
+      textStyle { label: Text; properties: face color size }
+      textStyle:preview { -ko-bind-text: @['AaZz']; -ko-font-family: @face; -ko-color: @color; -ko-font-size: @[size]px; }
+      linkStyle { label: Link; properties: face color size decoration=none }
+      linkStyle:preview { -ko-bind-text: @['Link']; -ko-font-size: @[size]px; -ko-font-family: @face; -ko-color: @color; -ko-text-decoration: @[decoration] }
+      bigButtonStyle { label: Big Button; extend: buttonStyle }
+      titleTextStyle { label: Title; extend: textStyle }
+      /* background */
+      externalBackgroundColor { label: External Background; extend: color }
+
+      externalTextStyle { label: Alternative Text; extend: textStyle }
+      externalTextStyle:preview { -ko-bind-text: @['AaZz']; -ko-font-family: @face; -ko-color: @color; -ko-font-size: @[size]px; }
+     
+      bigTitleStyle { label: Title; properties: face color size align}
+      bigTitleStyle:preview { -ko-bind-text: @['AaZz']; -ko-font-family: @face; -ko-color: @color; -ko-font-size: @[size]px; }
+      /* buttons */
+      buttonStyle color { label: Text Color; extend: color }
+      buttonStyle size { label: Text Size; extend: size }
+      buttonStyle { label: Button; properties: face color size buttonColor radius }
+      buttonStyle:preview { -ko-bind-text: @['Button']; -ko-font-family: @face; -ko-color: @color; -ko-font-size: @[size]px; -ko-background-color: @buttonColor; padding-left: 5px; -ko-border-radius: @[radius]px; }
+      
+      /* contents */
+      preheaderText {label: PreHeader Text; extend:text; help: This text will be shown on some email clients as a preview of the email contents;}
+      leftImage { label: Left Image; extend: image }
+      leftLongText { label: Left Text; extend: text }
+      leftButtonLink { label: Left Button; extend: buttonLink }
+      middleImage { label: Central Image; extend: image }
+      middleLongText { label: Central Text; extend: text }
+      middleButtonLink { label: Central Button; extend: buttonLink }
+      rightImage { label: Right Image; extend: image }
+      rightLongText { label: Right Text; extend: text }
+      rightButtonLink { label: Right Button; extend: buttonLink }
+      webversionText{ label: Web Link Text; extend: text;}
+      unsubscribeText{ label: Unsubscribe Link; extend: text;}
+
+      titleVisible { label: Show Title; extend: visible; }
+      headingVisible { label: Show Heading; extend: visible; }
+      imageVisible { label: Show Image; extend: visible; }
+      textVisible { label: Show Text; extend: visible; }
+
+      contentTheme { label: Main Style; }
+      contentTheme:preview { -ko-background-color: @[backgroundColor] }
+      frameTheme { label: Frame Style; }
+      frameTheme:preview { -ko-background-color: @[backgroundColor] }
+      template preheaderText { label: Preheader; }
+
+      template { label: Page; theme: frameTheme ;properties:  preheaderVisible=true; version: 1.0.5; }
+
+      footerBlock unsubscribeLinkStyle { label: Unsubscribe;  }
+      footerBlock { label: Footer Block; theme: frameTheme }
+      
+      preheaderBlock { label:Preheader Block;  theme: frameTheme}
+      postfooterBlock { label:Postfooter Block;}
+
+      sideArticleBlock imagePos {label:Image position;widget:select; options: left=Left|right=Right; }
+      sideArticleBlock imageWidth { label: Image Size; widget: select; options: 120=Small|166=Medium|258=Big; }
+      sideArticleBlock { label: Image+Text Block; properties: backgroundColor titleVisible=true buttonVisible=true imageWidth=166 imagePos=left titleTextStyle buttonStyle  image  buttonLink; variant:imagePos; theme: contentTheme }
+
+      textBlock { label: Text Block; properties: backgroundColor ; theme: contentTheme}
+
+      doubleArticleBlock { label: 2 Columns Block; properties: backgroundColor titleVisible=true buttonVisible=true imageVisible=true titleTextStyle buttonStyle  leftImage  leftLongText leftButtonLink rightImage  rightLongText rightButtonLink; theme: contentTheme}
+
+      tripleArticleBlock { label: 3 Columns Block; properties: backgroundColor headingVisible=true imageVisible=true textVisible=true titleTextStyle buttonStyle  leftImage  leftLongText leftButtonLink middleImage  middleLongText middleButtonLink rightImage  rightLongText rightButtonLink; theme: contentTheme}
+      
+      logoBlock imageWidth { label: Image Size; widget: select; options: 166=Small|258=Medium|350=Big; variant:imageWidth;}
+      logoBlock { label: Logo Block; properties: image imageWidth=258; variant: imageWidth; theme: contentTheme}
+      
+      titleBlock { label: Title; theme: contentTheme}
+
+      doubleImageBlock {
+        label: Alternative Text;
+        help: Some Email Clients will show this text if automatical download of images is disabled;
+      }
+      doubleImageBlock { label: Two Image Gallery Block; properties: gutterVisible=false; variant: gutterVisible; theme: contentTheme }
+
+      buttonBlock { label: Button Block; theme: contentTheme}
+      hrBlock { label: Separator Block;  theme: contentTheme}
+      spacerBlock { label: Spacer Block;  theme: contentTheme}
+    }
+  </style>
+  <style type="text/css" data-inline="true">
+    body { Margin: 0; padding: 0; }
+    img { border: 0px; display: block; }
+
+  </style>
+  <style type="text/css">
+    /* yahoo, hotmail */
+    .ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div { line-height: 100%; }
+    .yshortcuts a { border-bottom: none !important; }
+    .vb-outer { min-width: 0 !important; }
+    .RMsgBdy, .ExternalClass {
+      width: 100%;
+      background-color: #3f3f3f;
+      -ko-background-color: @[_theme_.frameTheme.backgroundColor]
+    }
+
+    /* outlook */
+    table { mso-table-rspace: 0pt; mso-table-lspace: 0pt; }
+    #outlook a { padding: 0; }
+    img { outline: none; text-decoration: none; border: none; -ms-interpolation-mode: bicubic; }
+    a img { border: none; }
+
+    @media screen and (max-device-width: 600px), screen and (max-width: 600px) {
+      table.vb-container, table.vb-row {
+        width: 95% !important;
+      }
+
+      .mobile-hide { display: none !important; }
+      .mobile-textcenter { text-align: center !important; }
+
+      .mobile-full {
+        float: none !important;
+        width: 100% !important;
+        max-width: none !important;
+        padding-right: 0 !important;
+        padding-left: 0 !important;
+      }
+      img.mobile-full {
+        width: 100% !important;
+        max-width: none !important;
+        height: auto !important;
+      }   
+    }
+  </style>
+  <style type="text/css" data-inline="true">
+
+  </style>
+</head>
+
+  <body style="background-color: #f3f3f3; color:" data-init-blocks="logoBlock headerBlock titleBlock tripleArticleBlock sideArticleBlock doubleArticleBlock textBlock footerBlock">
+
+
+<div data-ko-display="preheaderVisible" data-ko-wrap="false">
+	<table align="center" cellpadding="0" cellspacing="0" border="0" width="600" data-ko-block="preheaderBlock">
+                <tbody>
+                <tr>
+                    <td align="center" style="padding: 10px 0px 10px 0px;">
+                        <div style="font-family: Arial, Helvetica, sans-serif; font-size: 10px; color: #888888;">Having
+                            trouble viewing this email? <a data-ko-editable="webversionText" href="%%webversion%%"
+                                                           style="font-family: Arial, Helvetica, sans-serif; font-size: 10px; color: #888888;">Online
+                                version</a></div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+</div>
+
+    <center data-ko-container="main">
+        <!-- logoBlock -->
+	<table class="vb-outer" align="center" cellpadding="0" cellspacing="0" border="0" width="600" data-ko-block="logoBlock">
+                <tbody>
+                <tr>
+                    <td style="padding: 20px 15px 20px 15px;" bgcolor="#ffffff">
+                        <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                            <tbody>
+                            <tr>
+                                <td width="225"><a href="#" data-ko-link="logo.url"><img src="https://adamihm.accountcp.co.uk/storage/t/src/p7/1/images/image1.png" style="display: block;"
+                                                     border="0" height="30" width="130" data-ko-editable="logo.src"/></a></td>
+                                <td>
+                                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                                        <tbody>
+                                        <tr>
+                                            <td align="center"><a href="#"
+                                                                  style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #4e616f; text-decoration: none;" data-ko-link="leftLink.url" data-ko-editable="leftLink.text">Lorem</a>
+                                            </td>
+                                            <td align="center"><a href="#"
+                                                                  style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #4e616f; text-decoration: none;" data-ko-link="middleLink.url" data-ko-editable="middleLink.text">Ipsum</a>
+                                            </td>
+                                            <td align="center"><a href="#"
+                                                                  style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #4e616f; text-decoration: none;" data-ko-link="rightLink.url" data-ko-editable="rightLink.text">Dolor</a>
+                                            </td>
+                                            <td align="center" width="40"><a href="http://www.twitter.com/" data-ko-link="twitterLink.url"><img
+                                                    src="https://adamihm.accountcp.co.uk/storage/t/src/p7/1/images/image2.png" style="display: block;"
+                                                    border="0" height="20" width="20"/></a></td>
+                                            <td width="20"><a href="http://www.facebbok.com/" data-ko-link="facebookLink.url"><img
+                                                    src="https://adamihm.accountcp.co.uk/storage/t/src/p7/1/images/image3.png" style="display: block;"
+                                                    border="0" height="20" width="20"/></a></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                </tbody>
+            </table>        
+        <!-- /logoBlock  -->
+
+      <!-- headerBlock  -->
+	<table align="center" cellpadding="0" cellspacing="0" border="0" width="600" data-ko-block="headerBlock">
+                <tbody>
+                <tr>
+                    <td background="https://adamihm.accountcp.co.uk/storage/t/src/p7/1/images/image4.png" bgcolor="#546775" width="600" valign="top">
+                        <!--[if gte mso 9]>
+                        <v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="width:600px;">
+                            <v:fill type="tile" src="/storage/t/src/p7/1/images/image4.png" color="#546775"/>
+                            <v:textbox style="mso-fit-shape-to-text:true" inset="0,0,0,0">
+                        <![endif]-->
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <tbody>
+                            <tr>
+                                <td height="290" align="center" valign="middle">
+                                    <table cellpadding="0" cellspacing="0" border="0" width="350">
+                                        <tbody>
+                                        <tr>
+                                            <td align="center"
+                                                style="font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #ffffff; -ko-color: @textColor; line-height: 1.5em;">
+                                                <p style="font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #ffffff; -ko-color: @textColor; line-height: 1.5em;" data-ko-editable="headerText">
+                                                    Nunc sollicitudin elit ac urna cursus mollis. Morbi rhoncus metus
+                                                    eget est faucibus blandit. Sed urna velit, dictum quis.
+                                                </p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="center" style="padding: 10px 0px 0px 0px;"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <table width="350" border="0" cellspacing="0" cellpadding="0">
+                                        <tbody>
+                                        <tr>
+                                            <td align="center">
+                                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                                <table width="180" border="0" align="center" cellpadding="0"
+                                                       cellspacing="0">
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <table width="100%" border="0" align="left" cellpadding="0"
+                                                                   cellspacing="0">
+                                                                <tbody>
+                                                                <tr>
+                                                                    <td width="19"><img
+                                                                            src="https://adamihm.accountcp.co.uk/storage/t/src/p7/1/images/image11.png"
+                                                                            border="0" height="40" width="19"
+                                                                            style="display: block;"/></td>
+                                                                    <td bgcolor="#5ba4f3" align="center">
+                                                                        <table width="100%" border="0" cellspacing="0"
+                                                                               cellpadding="0">
+                                                                            <tbody>
+                                                                            <tr>
+                                                                                <td align="center">
+                                                                                    <div align="center"><a href="#" data-ko-link="headerLink.url" data-ko-editable="headerLink.text" style="font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #ffffff; font-weight: bold; text-decoration: none;">READ
+                                                                                        MORE</a></div>
+                                                                                </td>
+                                                                            </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </td>
+                                                                    <td width="19"><img
+                                                                            src="https://adamihm.accountcp.co.uk/storage/t/src/p7/1/images/image10.png"
+                                                                            width="19" height="40" border="0"
+                                                                            style="display: block;"/></td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <!--[if gte mso 9]>
+                        </v:textbox>
+                        </v:rect>
+                        <![endif]--></td>
+                </tr>
+                </tbody>
+            </table>	      
+      <!-- /headerBlock -->
+
+      <!-- TitleBlock -->
+	<table align="center" cellpadding="0" cellspacing="0" border="0" width="600" data-ko-block="titleBlock">
+                <tbody>
+                <tr>
+                    <td align="center" style="padding: 20px 0px 20px 0px;" bgcolor="#ffffff">
+                        <span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; color: #3e5464; -ko-color: @headingColor;font-weight: bold;" data-ko-editable="text">
+                            Faucibus blandit sed urna velit, dictum quis
+                        </span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>        
+      <!-- /TitleBlock -->
+
+      <!-- tripleArticleBlock -->
+	<table align="center" cellpadding="0" cellspacing="0" border="0" width="600" data-ko-block="tripleArticleBlock">
+                <tbody>
+                <tr>
+                    <td style="padding: 0px 15px 30px 15px;" bgcolor="#ffffff">
+                        <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                            <tbody>
+                            <tr>
+                                <td valign="top" width="176">
+                                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                                        <tbody>
+                                        <tr data-ko-display="imageVisible">
+                                            <td>
+						<a data-ko-link="leftImage.url" href="">
+						<img data-ko-editable="leftImage.src" src="https://adamihm.accountcp.co.uk/storage/t/src/p7/1/images/image5.png" style="display: block; -ko-attr-height: @imageHeight; -ko-attr-alt: @leftImage.alt"
+                                                     border="0" height="123" width="176"/>
+						</a>
+						</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="center" style="padding: 30px 0px 0px 0px;">
+                                                <span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; color: #3e5464; -ko-color: @headingColor;font-weight: bold;" data-ko-display="headingVisible; " data-ko-editable="leftHeadingText">
+                                                    Heading 1
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr data-ko-display="textVisible">
+                                            <td align="center">
+                                                <div style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #798186; -ko-color: @textColor; line-height: 1.5em;" data-ko-editable="leftText">
+                                                    Proin consequat arcu vel purus rhoncus ac sagittis est suscipit.
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td width="21"></td>
+                                <td valign="top" width="176">
+                                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                                        <tbody>
+                                        <tr data-ko-display="imageVisible">
+                                            <td>
+						<a data-ko-link="middleImage.url" href="">
+						<img data-ko-editable="middleImage.src" src="https://adamihm.accountcp.co.uk/storage/t/src/p7/1/images/image6.png" style="display: block; -ko-attr-height: @imageHeight; -ko-attr-alt: @middleImage.alt"
+                                                     border="0" height="123" width="176"/>
+						</a>
+						</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="center" style="padding: 30px 0px 0px 0px;">
+                                                <span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; color: #3e5464; -ko-color: @headingColor;font-weight: bold;" data-ko-display="headingVisible" data-ko-editable="middleHeadingText">
+                                                    Heading 2
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr data-ko-display="textVisible">
+                                            <td align="center">
+                                                <div style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #798186; -ko-color: @textColor; line-height: 1.5em;" data-ko-editable="middleText">
+                                                    Proin consequat arcu vel purus rhoncus ac sagittis est suscipit.
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td width="21"></td>
+                                <td valign="top" width="176">
+                                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                                        <tbody>
+                                        <tr data-ko-display="imageVisible">
+                                            <td>
+						<a data-ko-link="rightImage.url" href="">
+						<img data-ko-editable="rightImage.src" src="https://adamihm.accountcp.co.uk/storage/t/src/p7/1/images/image7.png" style="display: block; -ko-attr-height: @imageHeight; -ko-attr-alt: @rightImage.alt"
+                                                     border="0" height="123" width="176"/>
+						</a>
+					</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="center" style="padding: 30px 0px 0px 0px;">
+                                                <span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; color: #3e5464; -ko-color: @headingColor;font-weight: bold;" data-ko-display="headingVisible" data-ko-editable="rightHeadingText">
+                                                    Heading 3
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr data-ko-display="textVisible">
+                                            <td align="center">
+							<div style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #798186; -ko-color: @textColor; line-height: 1.5em;" data-ko-editable="rightText">
+                                                    Proin consequat arcu vel purus rhoncus ac sagittis est suscipit.
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        <!-- /tripleArticleBlock -->
+
+
+      <!-- sideArticleBlock  -->
+<table align="center" cellpadding="0" cellspacing="0" border="0" width="600" data-ko-block="sideArticleBlock">
+                <tbody>
+                <tr>
+                    <td style="padding: 30px 15px 30px 15px;" bgcolor="#e8e8e8">
+                        <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                            <tbody>
+                            <tr>
+                                <td valign="top" width="176"><img data-ko-editable="image.src" src="https://adamihm.accountcp.co.uk/storage/t/src/p7/1/images/image7.png"
+                                                                  height="123" width="176"/></td>
+                                <td style="padding: 0px 0px 0px 21px;" valign="top">
+                                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                                        <tbody>
+                                        <tr>
+                                            <td>
+                                                <span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; color: #3e5464; -ko-color: @headingColor;font-weight: bold;" data-ko-editable="headingText">
+                                                    Heading 4
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 10px 0px 0px 0px;">
+                                                <div style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #798186; -ko-color: @textColor; line-height: 1.5em;" data-ko-editable="text">
+                                                    Proin consequat arcu vel purus rhoncus ac sagittis est suscipit.
+                                                    Nullam nulla eros, pulvinar sit amet varius in.
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 10px 0px 0px 0px;">
+                                                <table width="350" border="0" cellspacing="0" cellpadding="0">
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <table width="180" border="0" align="left" cellpadding="0"
+                                                                   cellspacing="0">
+                                                                <tbody>
+                                                                <tr>
+                                                                    <td>
+                                                                        <table width="100%" border="0" align="left"
+                                                                               cellpadding="0" cellspacing="0">
+                                                                            <tbody>
+                                                                            <tr>
+                                                                                <td width="19"><img
+                                                                                        src="https://adamihm.accountcp.co.uk/storage/t/src/p7/1/images/image11.png"
+                                                                                        border="0" height="40"
+                                                                                        width="19"
+                                                                                        style="display: block;"/></td>
+                                                                                <td bgcolor="#5ba4f3">
+                                                                                    <table width="100%" border="0"
+                                                                                           cellspacing="0"
+                                                                                           cellpadding="0">
+                                                                                        <tbody>
+                                                                                        <tr>
+                                                                                            <td>
+                                                                                                <div align="center"><a data-ko-link="articleLink.url" data-ko-editable="articleLink.text"
+                                                                                                        href="#"
+                                                                                                        style="font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #ffffff; font-weight: bold; text-decoration: none;">READ
+                                                                                                    MORE</a></div>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </td>
+                                                                                <td width="19"><img
+                                                                                        src="https://adamihm.accountcp.co.uk/storage/t/src/p7/1/images/image10.png"
+                                                                                        width="19" height="40"
+                                                                                        border="0"
+                                                                                        style="display: block;"/></td>
+                                                                            </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                </tbody>
+            </table>        
+        <!-- /sideArticleBlock -->
+
+
+        <!-- doubleArticleBlock -->
+<table align="center" cellpadding="0" cellspacing="0" border="0" width="600" data-ko-block="doubleArticleBlock">
+                <tbody>
+                <tr>
+                    <td style="padding: 30px 15px 30px 15px;" bgcolor="#ffffff">
+                        <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                            <tbody>
+                            <tr></tr>
+                            <tr>
+                                <td valign="top" width="273">
+                                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                                        <tbody>
+                                        <tr>
+                                            <td><img data-ko-editable="leftImage.src" src="https://adamihm.accountcp.co.uk/storage/t/src/p7/1/images/image8.png" style="display: block;"
+                                                     border="0" height="191" width="273"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td align="center" style="padding: 30px 0px 0px 0px;"><em><span
+                                                    style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #3e5464; -ko-color: @headingColor;line-height: 1.5em;" data-ko-editable="leftDateText">01 January 2014 , </span><span
+                                                    style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #798186; -ko-color: @textColor;" data-ko-editable="leftText">Proin consequat arcu vel purus rhoncus ac sagittis est suscipit. </span></em>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td>&nbsp;</td>
+                                <td valign="top" width="273">
+                                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                                        <tbody>
+                                        <tr>
+                                            <td><img data-ko-editable="rightImage.src" src="https://adamihm.accountcp.co.uk/storage/t/src/p7/1/images/image9.png" style="display: block;"
+                                                     border="0" height="191" width="273"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td align="center" style="padding: 30px 0px 0px 0px;"><em><span
+                                                    style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #3e5464; -ko-color: @headingColor;line-height: 1.5em;" data-ko-editable="rightDateText">01 January 2014 , </span><span
+                                                    style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #798186; -ko-color: @textColor;" data-ko-editable="rightText">Proin consequat arcu vel purus rhoncus ac sagittis est suscipit. </span></em>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+          <!-- /doubleArticleBlock -->
+
+
+        <!-- textBlock -->
+<table align="center" cellpadding="0" cellspacing="0" border="0" width="600" data-ko-block="textBlock">
+                <tbody>
+                <tr>
+                    <td align="center" style="padding: 30px 0px 30px 0px;" bgcolor="#ffffff">
+                        <table cellpadding="0" cellspacing="0" border="0" width="350">
+                            <tbody>
+                            <tr>
+                                <td align="center">
+                                    <span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; color: #3e5464; -ko-color: @headingColor;font-weight: bold;" data-ko-editable="headingText">
+                                        Heading 5
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center" style="padding: 10px 0px 0px 0px;">
+                                    <div style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #798186; -ko-color: @textColor; line-height: 1.5em;" data-ko-editable="text">
+                                        Proin consequat arcu vel purus rhoncus ac sagittis est suscipit. Nullam nulla
+                                        eros, pulvinar sit amet varius in.
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <table width="350" border="0" cellspacing="0" cellpadding="0">
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                        <tbody>
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <table width="180" border="0" align="center" cellpadding="0" cellspacing="0">
+                                        <tbody>
+                                        <tr>
+                                            <td>
+                                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                    <tbody>
+                                                    <tr>
+                                                        <td width="19"><img src="https://adamihm.accountcp.co.uk/storage/t/src/p7/1/images/image11.png"
+                                                                            border="0" height="40" width="19"
+                                                                            style="display: block;"/></td>
+                                                        <td bgcolor="#5ba4f3">
+                                                            <table width="100%" border="0" cellspacing="0"
+                                                                   cellpadding="0">
+                                                                <tbody>
+                                                                <tr>
+                                                                    <td>
+                                                                        <div align="center"><a data-ko-link="moreLink.url" data-ko-editable="moreLink.text" href="#"
+                                                                                               style="font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #ffffff; font-weight: bold; text-decoration: none;">READ MORE</a></div>
+                                                                    </td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </td>
+                                                        <td width="19"><img src="https://adamihm.accountcp.co.uk/storage/t/src/p7/1/images/image10.png"
+                                                                            width="19" height="40" border="0"
+                                                                            style="display: block;"/></td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+          <!-- /textBlock -->
+
+          <!-- footerBlock -->
+	<table align="center" cellpadding="0" cellspacing="0" border="0" width="600" data-ko-block="footerBlock">
+                <tbody>
+                <tr>
+                    <td style="padding: 30px 15px 30px 15px;" bgcolor="#546775">
+                        <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                            <tbody>
+                            <tr>
+                                <td width="250">
+                                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                                        <tbody>
+                                        <tr>
+                                            <td>
+                                                <div style="font-family: Arial, Helvetica, sans-serif; font-size: 11px; color: #e8e8e8; font-weight: bold;">
+                                                    Tel:
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span style="font-family: Arial, Helvetica, sans-serif; font-size: 11px; color: #e8e8e8;" data-ko-editable="phoneText">
+                                                    01111 222333
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div style="font-family: Arial, Helvetica, sans-serif; font-size: 11px; color: #e8e8e8; font-weight: bold;">
+                                                    Fax:
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span style="font-family: Arial, Helvetica, sans-serif; font-size: 11px; color: #e8e8e8;" data-ko-editable="faxText">
+                                                    04444 555666
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div style="font-family: Arial, Helvetica, sans-serif; font-size: 11px; color: #e8e8e8; font-weight: bold;">
+                                                    Email:
+                                                </div>
+                                            </td>
+                                            <td><a data-ko-link="emailLink.url" data-ko-editable="emailLink.text" href="mailto:info@yourdomain.co.uk"
+                                                   style="font-family: Arial, Helvetica, sans-serif; font-size: 11px; color: #e8e8e8;">info@yourdomain.co.uk</a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td valign="top">
+                                                <div style="font-family: Arial, Helvetica, sans-serif; font-size: 11px; color: #e8e8e8; font-weight: bold;">
+                                                    Address:
+                                                </div>
+                                            </td>
+                                            <td valign="top">
+                                                <span style="font-family: Arial, Helvetica, sans-serif; font-size: 11px; color: #e8e8e8;" data-ko-editable="addressText">
+                                                    Company Name<br/>Address line 1<br/>Address line 2<br/>Country<br/>Postcode
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td valign="top">&nbsp;</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <!-- /footerBlock -->
+
+    </center>
+
+	<table align="center" cellpadding="0" cellspacing="0" border="0" width="600" data-ko-block="postfooterBlock">
+                <tbody>
+                <tr>
+                    <td align="center" style="padding: 10px 0px 10px 0px;">
+                        <div style="font-family: Arial, Helvetica, sans-serif; font-size: 10px; color: #888888;">Don't
+                            want to receive our emails anymore? <a data-ko-editable="unsubscribeText" href="%%unsubscribelink%%"
+                                                                   style="font-family: Arial, Helvetica, sans-serif; font-size: 10px; color: #888888;">Unsubscribe</a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+  </body>
+</html>

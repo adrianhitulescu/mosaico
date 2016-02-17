@@ -87,8 +87,10 @@ ko.bindingHandlers.wysiwygSrc = {
     var width = ko.utils.unwrapObservable(value.width);
     var height = ko.utils.unwrapObservable(value.height);
     if ((attrValue === false) || (attrValue === null) || (attrValue === undefined) || (attrValue === '')) {
-      if (typeof placeholderValue == 'object' && placeholderValue !== null) element.setAttribute('src', ko.bindingHandlers.wysiwygSrc.placeholderUrl(placeholderValue.width, placeholderValue.height, placeholderValue.text));
-      else element.removeAttribute('src');
+
+      // ## changed by adrianhitulescu ## -> we want to keep the original src attribute so we can display the correct images when preloading the blocks
+      // if (typeof placeholderValue == 'object' && placeholderValue !== null) element.setAttribute('src', ko.bindingHandlers.wysiwygSrc.placeholderUrl(placeholderValue.width, placeholderValue.height, placeholderValue.text));
+      // else element.removeAttribute('src');
     } else {
       var method = ko.utils.unwrapObservable(value.method);
       if (!method) method = width > 0 && height > 0 ? 'cover' : 'resize';
