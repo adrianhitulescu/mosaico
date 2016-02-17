@@ -35,12 +35,31 @@ $(function() {
   var plugins;
   // A basic plugin that expose the "viewModel" object as a global variable.
   // plugins = [function(vm) {window.viewModel = vm;}];
+
+var templateInitPlugin = function(vm) {
+	setTimeout(function() {
+                var initBlocks = $('replacedbody').data('init-blocks');
+
+                // just get out of here if the template does not need to be initialized
+                if (typeof initBlocks == 'undefined') return;
+
+                $.each(initBlocks.split(' '), function(index, block) {
+                        $('[alt="Block ' + block  + '"]').parent().siblings('a').click();
+                });
+
+                // destroy the notifications since
+                $('#mo-body div').remove();
+        }, 10);
+}
+
+plugins = [templateInitPlugin];
+
   var ok = Mosaico.init({
-    imgProcessorBackend: basePath+'/img/',
-    emailProcessorBackend: basePath+'/dl/',
+    imgProcessorBackend: 'img',
+    emailProcessorBackend: 'dl/',
     titleToken: "MOSAICO Responsive Email Designer",
     fileuploadConfig: {
-      url: basePath+'/upload/',
+      url: 'upload/',
       // messages??
     }
   }, plugins);
