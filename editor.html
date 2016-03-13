@@ -23,7 +23,8 @@
     <script src="dist/vendor/evol.colorpicker.min.js"></script>
     <script src="dist/vendor/tinymce.min.js"></script>
 
-    <script src="dist/mosaico.min.js?v=0.13"></script>
+    <!--<script src="dist/mosaico.min.js?v=0.13"></script>-->
+    <script src="build/mosaico.js?v=0.13"></script>
     <script>
 $(function() {
   if (!Mosaico.isCompatible()) {
@@ -32,35 +33,43 @@ $(function() {
   }
   // var basePath = window.location.href.substr(0, window.location.href.lastIndexOf('/')).substr(window.location.href.indexOf('/','https://'.length));
   var basePath = window.location.href.substr(0, window.location.href.lastIndexOf('/'));
-  var plugins;
+  var plugins = [];
   // A basic plugin that expose the "viewModel" object as a global variable.
   // plugins = [function(vm) {window.viewModel = vm;}];
 
-var templateInitPlugin = function(vm) {
-	setTimeout(function() {
-                var initBlocks = $('replacedbody').data('init-blocks');
+//  plugins.push(function(vm) {
+//    vm.debug = function() {
+//
+//    };
+//  })
 
-                // just get out of here if the template does not need to be initialized
-                if (typeof initBlocks == 'undefined') return;
+  // replace convert url method so we can return the original url
+  plugins.push(function(vm) {
+    ko.bindingHandlers.wysiwygSrc.convertedUrl = function(src) {
+      return src;
+    }
+  })
 
-                $.each(initBlocks.split(' '), function(index, block) {
-                        $('[alt="Block ' + block  + '"]').parent().siblings('a').click();
-                });
+  // add the blocks that are set to be preloaded
+  plugins.push(function(vm) {
+    for (var i = 0, len = vm.blockDefs.length; i < len; i++) {
+      if (vm.blockDefs[i].preload == 'true') {
+        vm.addBlock(vm.blockDefs[i]);
+      }
+    }
+  });
 
-                // destroy the notifications since
-                $('#mo-body div').remove();
-        }, 10);
-}
-
-plugins = [templateInitPlugin];
+  // disable the logo
+  plugins.push(function(vm) {
+    vm.logoPath = false;
+  });
 
   var ok = Mosaico.init({
     imgProcessorBackend: 'img',
     emailProcessorBackend: 'dl/',
-    titleToken: "MOSAICO Responsive Email Designer",
+    titleToken: "Drag and Drop editor",
     fileuploadConfig: {
       url: 'upload/',
-      // messages??
     }
   }, plugins);
   if (!ok) {
