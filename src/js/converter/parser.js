@@ -262,8 +262,7 @@ var processBlock = function(element, defs, themeUpdater, blockPusher, templateUr
       var plheight = height || domutils.getAttribute(element, 'data-ko-placeholder-height');
       var plwidth = width || domutils.getAttribute(element, 'data-ko-placeholder-width');
 
-      // ## changed by adrianhitulescu ## -> we want to keep the original src attribute so we can display the correct images when preloading the blocks
-      // domutils.removeAttribute(element, 'src');
+      domutils.removeAttribute(element, 'src');
       domutils.removeAttribute(element, 'data-ko-editable');
       domutils.removeAttribute(element, 'data-ko-placeholder-height');
       domutils.removeAttribute(element, 'data-ko-placeholder-width');
