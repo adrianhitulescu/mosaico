@@ -37,16 +37,58 @@ $(function() {
   // A basic plugin that expose the "viewModel" object as a global variable.
   // plugins = [function(vm) {window.viewModel = vm;}];
 
-//  plugins.push(function(vm) {
-//    vm.debug = function() {
-//
-//    };
-//  })
+  plugins.push(function(vm) {
+    // enable debugging
+    //vm.debug = function() {};
+    window.vm = vm;
+
+    // disabled the logo
+    vm.logoPath = false;
+    vm.screenshotsPath = 'edres/';
+  })
 
   // replace convert url method so we can return the original url
+  // replace convert url method so we can return the original url
   plugins.push(function(vm) {
-    ko.bindingHandlers.wysiwygSrc.convertedUrl = function(src) {
-      return src;
+    options = {
+      imgProcessorBackend: '/ui/dnd.php?do=image'
+    };
+
+    ko.bindingHandlers.wysiwygSrc.convertedUrl = function(src, method, width, height) {
+      var imgProcessorBackend = options.imgProcessorBackend ? options.imgProcessorBackend : 'uploads/';
+      var backEndMatch = imgProcessorBackend.match(/^(https?:\/\/[^\/]*\/).*$/);
+      var srcMatch = src.match(/^(https?:\/\/[^\/]*\/).*$/);
+      if (backEndMatch === null || (srcMatch !== null && backEndMatch[1] == srcMatch[1])) {
+        return imgProcessorBackend + "&src=" + encodeURIComponent(src) + "&method=" + encodeURIComponent(method) + "&params=" + encodeURIComponent(width + "," + height);
+      } else {
+        console.log("Cannot apply backend image resizing to non-local resources ", src, method, width, height, backEndMatch, srcMatch);
+        return src + "?method=" + method + "&width=" + width + (height !== null ? "&height=" + height : '');
+      }
+    };
+
+    ko.bindingHandlers.wysiwygSrc.placeholderUrl = function(width, height, text) {
+      return options.imgProcessorBackend + "&method=" + 'placeholder' + "&params=" + width + encodeURIComponent(",") + height;
+    };
+
+    ko.bindingHandlers.wysiwygSrc.update = function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+      var value = ko.utils.unwrapObservable(valueAccessor());
+      var attrValue = ko.utils.unwrapObservable(value.src);
+      var placeholderValue = ko.utils.unwrapObservable(value.placeholder);
+      var width = ko.utils.unwrapObservable(value.width);
+      var height = ko.utils.unwrapObservable(value.height);
+      if ((attrValue === false) || (attrValue === null) || (attrValue === undefined) || (attrValue === '')) {
+        if (typeof placeholderValue == 'object' && placeholderValue !== null) element.setAttribute('src', ko.bindingHandlers.wysiwygSrc.placeholderUrl(placeholderValue.width, placeholderValue.height, placeholderValue.text));
+        else element.removeAttribute('src');
+      } else {
+        var method = ko.utils.unwrapObservable(value.method);
+        if (!method) method = width > 0 && height > 0 ? 'cover' : 'resize';
+        //var src = ko.bindingHandlers.wysiwygSrc.convertedUrl(attrValue.toString(), method, width, height);
+        //element.setAttribute('src', src);
+      }
+      if (typeof width !== 'undefined' && width !== null) element.setAttribute("width", width);
+      else element.removeAttribute("width");
+      if (typeof height !== 'undefined' && height !== null) element.setAttribute("height", height);
+      else element.removeAttribute("height");
     }
   })
 
@@ -57,11 +99,7 @@ $(function() {
         vm.addBlock(vm.blockDefs[i]);
       }
     }
-  });
-
-  // disable the logo
-  plugins.push(function(vm) {
-    vm.logoPath = false;
+    vm.undoReset();
   });
 
   var ok = Mosaico.init({
