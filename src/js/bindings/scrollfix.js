@@ -31,8 +31,15 @@ var render = function() {
 
 ko.bindingHandlers.wysiwygScrollfix = {
   'scroll': function(event) {
-    if (timeout) global.clearTimeout(timeout);
-    timeout = global.setTimeout(render, 50);
+    //if (timeout) global.clearTimeout(timeout);
+    //timeout = global.setTimeout(render, 50);
+
+    var editor = tinymce.focusedEditor;
+
+    if (editor) {
+      editor.hide();
+      editor.show();
+    }
   },
   'init': function(element) {
     ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
